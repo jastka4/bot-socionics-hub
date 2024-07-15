@@ -1,0 +1,25 @@
+{
+  "name": "bot-integral-type-calculator",
+  "version": "1.0.0",
+  "description": "Discord bot capable of calculating the integral type of Socionics relationships.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "discord",
+    "bot",
+    "socionics",
+    "integral",
+    "type",
+    "relationship",
+    "calculator",
+    "shs"
+  ],
+  "author": "Justyna Skalska",
+  "license": "ISC",
+  "dependencies": {
+    "discord.js": "^14.15.3",
+    "nodemon": "^3.1.4"
+  }
+}
