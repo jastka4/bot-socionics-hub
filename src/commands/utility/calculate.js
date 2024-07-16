@@ -57,9 +57,16 @@ module.exports = {
         .setRequired(true)
     ),
   async execute(interaction) {
-    const listOfTypes = interaction.options.get("types").value.split(" ");
-    const result = findIntegralType(listOfTypes);
+    const rawListOfTypes = interaction.options.get("types").value.toUpperCase();
+    const regex = /^(([LE][IS][IE]|[IS][LE][IE]) ?)*$/;
 
-    await interaction.reply(`The integral type is: ${result}`);
+    if (regex.test(rawListOfTypes)) {
+      const result = findIntegralType(rawListOfTypes.split(" "));
+      await interaction.reply(
+        `The integral type of \`${rawListOfTypes}\` is: \`${result}\``
+      );
+    } else {
+      await interaction.reply(`❗️ Wrong format used: \`${rawListOfTypes}\`.\n\nUsage example: \`/calculate LSI EIE LIE\``)
+    }
   },
 };
