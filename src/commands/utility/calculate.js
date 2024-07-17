@@ -1,4 +1,4 @@
-const { SlashCommandBuilder } = require("discord.js");
+const { EmbedBuilder, SlashCommandBuilder } = require("discord.js");
 
 /*
 Map type to indicators (extroversion/introversion, intuition/sensing, logic/ethics, irrational/rational):
@@ -57,16 +57,34 @@ module.exports = {
         .setRequired(true)
     ),
   async execute(interaction) {
-    const rawListOfTypes = interaction.options.get("types").value.toUpperCase();
+    const rawValue = interaction.options.get("types").value.toUpperCase();
     const regex = /^(([LE][IS][IE]|[IS][LE][IE]) ?)*$/;
 
-    if (regex.test(rawListOfTypes)) {
-      const result = findIntegralType(rawListOfTypes.split(" "));
-      await interaction.reply(
-        `The integral type of \`${rawListOfTypes}\` is: \`${result}\``
-      );
+    if (regex.test(rawValue)) {
+      const listOfTypes = rawValue.split(" ");
+      const result = findIntegralType(listOfTypes);
+
+      await interaction.reply({
+        embeds: [
+          new EmbedBuilder()
+            .setColor(0xf1c40f)
+            .setTitle(result)
+            .setDescription(listOfTypes.join(", ")),
+        ],
+      });
     } else {
-      await interaction.reply(`❗️ Wrong format used: \`${rawListOfTypes}\`.\n\nUsage example: \`/calculate LSI EIE LIE\``)
+      await interaction.reply({
+        embeds: [
+          new EmbedBuilder()
+            .setColor(0xf1c40f)
+            .setTitle("❗️ Wrong format ❗️")
+            .setDescription(interaction.options.get("types").value)
+            .addFields({
+              name: "Usage example",
+              value: "`/calculate LSI EIE LIE`",
+            }),
+        ],
+      });
     }
   },
 };
