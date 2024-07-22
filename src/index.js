@@ -1,7 +1,7 @@
 require("dotenv").config();
 const fs = require("node:fs");
 const path = require("node:path");
-const { Client, Collection, Events, IntentsBitField } = require("discord.js");
+const { Client, Collection, IntentsBitField } = require("discord.js");
 const express = require("express");
 
 const app = express();
@@ -56,6 +56,10 @@ for (const file of eventFiles) {
 }
 
 client.login(process.env.TOKEN);
+
+app.get("/health", (req, res) => {
+  res.status(200).send("OK");
+});
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
