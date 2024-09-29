@@ -27,24 +27,24 @@ const types = [
   { name: "SLI", value: "SLI" },
 ];
 
-function createEmbed(title, description, fields, footerText) {
+function createEmbed({ title, description, fields, footerText }) {
   return new EmbedBuilder()
-  .setAuthor({
-    name: "Socionics Hub",
-    url: "https://socionics-hub.vercel.app/",
-    iconURL:
-      "https://vpfxlag2bwarpbmr.public.blob.vercel-storage.com/socionics-hub-logo-9mDyHDaKSJyIaNVticAioTJOFB1t9Z.png",
-  })
-  .setTitle(title)
-  .setDescription(description)
-  .addFields(fields)
-  .setColor(0xf1c40f)
-  .setFooter({
-    text: footerText,
-    iconURL:
-      "https://vpfxlag2bwarpbmr.public.blob.vercel-storage.com/socionics-hub-logo-9mDyHDaKSJyIaNVticAioTJOFB1t9Z.png",
-  })
-  .setTimestamp()
+    .setAuthor({
+      name: "Socionics Hub",
+      url: process.env.SOCIONICS_HUB,
+      iconURL:
+        "https://vpfxlag2bwarpbmr.public.blob.vercel-storage.com/socionics-hub-logo-9mDyHDaKSJyIaNVticAioTJOFB1t9Z.png",
+    })
+    .setTitle(title)
+    .setDescription(description)
+    .addFields(fields)
+    .setColor(0xf1c40f)
+    .setFooter({
+      text: footerText,
+      iconURL:
+        "https://vpfxlag2bwarpbmr.public.blob.vercel-storage.com/socionics-hub-logo-9mDyHDaKSJyIaNVticAioTJOFB1t9Z.png",
+    })
+    .setTimestamp();
 }
 
 module.exports = {
@@ -130,26 +130,15 @@ module.exports = {
           } else {
             await interaction.reply({
               embeds: [
-                new EmbedBuilder()
-                  .setAuthor({
-                    name: "Socionics Hub",
-                    url: "https://socionics-hub.vercel.app/",
-                    iconURL:
-                      "https://vpfxlag2bwarpbmr.public.blob.vercel-storage.com/socionics-hub-logo-9mDyHDaKSJyIaNVticAioTJOFB1t9Z.png",
-                  })
-                  .setTitle("❗️ Wrong subtype format ❗️")
-                  .setDescription(interaction.options.get("subtype").value)
-                  .addFields({
-                    name: "Accepted formats",
-                    value: "`C`\n`CN`\n`CND`\n`CNDH`",
-                  })
-                  .setColor(0xf1c40f)
-                  .setFooter({
-                    text: "Error",
-                    iconURL:
-                      "https://vpfxlag2bwarpbmr.public.blob.vercel-storage.com/socionics-hub-logo-9mDyHDaKSJyIaNVticAioTJOFB1t9Z.png",
-                  })
-                  .setTimestamp(),
+                createEmbed({
+                  title: "❗️ Wrong subtype format ❗️",
+                  description: interaction.options.get("subtype").value,
+                  fields: {
+                    name: "Accepted formats:",
+                    value: "`C`, `CN`, `CND`, `CNDH`",
+                  },
+                  footerText: "Error",
+                }),
               ],
             });
             return;
@@ -177,6 +166,8 @@ module.exports = {
         break;
     }
 
+    interaction.deferReply();
+
     const stringifiedQuery = qs.stringify(
       {
         limit: 10,
@@ -187,7 +178,7 @@ module.exports = {
       { addQueryPrefix: true }
     );
 
-    console.log(stringifiedQuery);
+    /////////////////////////////////////////////// TO EXTRACT ///////////////////////////////////////////////
     const data = await fetch(
       new URL(`api/profiles${stringifiedQuery}`, process.env.SOCIONICS_HUB)
     ).then((response) => response.json());
@@ -195,24 +186,12 @@ module.exports = {
     if (data.totalDocs == 0) {
       await interaction.reply({
         embeds: [
-          new EmbedBuilder()
-            .setAuthor({
-              name: "Socionics Hub",
-              url: "https://socionics-hub.vercel.app/",
-              iconURL:
-                "https://vpfxlag2bwarpbmr.public.blob.vercel-storage.com/socionics-hub-logo-9mDyHDaKSJyIaNVticAioTJOFB1t9Z.png",
-            })
-            .setTitle(school.toUpperCase())
-            .setDescription(
-              `${typeDetails.join("\n")}\n\n**No results found!**`
-            )
-            .setColor(0xf1c40f)
-            .setFooter({
-              text: `Page ${data.page}/${data.totalPages}`,
-              iconURL:
-                "https://vpfxlag2bwarpbmr.public.blob.vercel-storage.com/socionics-hub-logo-9mDyHDaKSJyIaNVticAioTJOFB1t9Z.png",
-            })
-            .setTimestamp(),
+          createEmbed({
+            title: school.toUpperCase(),
+            description: `${typeDetails.join("\n")}\n\n**No results found!**`,
+            fields: [],
+            footerText: `Page ${data.page}/${data.totalPages}`,
+          }),
         ],
       });
       return;
@@ -246,19 +225,14 @@ module.exports = {
         scsTypes.push("---");
       }
     }
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     const pagination = new ButtonPaginationBuilder();
     pagination.addPages(
-      new EmbedBuilder()
-        .setAuthor({
-          name: "Socionics Hub",
-          url: "https://socionics-hub.vercel.app/",
-          iconURL:
-            "https://vpfxlag2bwarpbmr.public.blob.vercel-storage.com/socionics-hub-logo-9mDyHDaKSJyIaNVticAioTJOFB1t9Z.png",
-        })
-        .setTitle(school.toUpperCase())
-        .setDescription(typeDetails.join("\n"))
-        .addFields(
+      createEmbed({
+        title: school.toUpperCase(),
+        description: typeDetails.join("\n"),
+        fields: [
           {
             name: "Name",
             value: names.join("\n"),
@@ -273,22 +247,42 @@ module.exports = {
             name: "SCS",
             value: scsTypes.join("\n"),
             inline: true,
-          }
-        )
-        .setColor(0xf1c40f)
-        .setFooter({
-          text: `Page ${data.page}/${data.totalPages}`,
-          iconURL:
-            "https://vpfxlag2bwarpbmr.public.blob.vercel-storage.com/socionics-hub-logo-9mDyHDaKSJyIaNVticAioTJOFB1t9Z.png",
-        })
-        .setTimestamp()
+          },
+          // TODO Figure out a way to redirect to the search page (probably after implementing the search functionality)
+          // {
+          //   name: " ",
+          //   value: `🕵️‍♂️ Inspect the search results on [Socionics Hub](${new URL(`profiles${stringifiedQuery}`, process.env.SOCIONICS_HUB)})!`
+          // }
+        ],
+        footerText: `Page ${data.page}/${data.totalPages}`,
+      })
     );
 
     for (let i = 1; i < data.totalPages; i++) {
-      pagination.addPages(
-        () =>
-          new EmbedBuilder().setDescription("Page 4\n" + new Date().toString()) // Dynamic page
-      );
+      pagination.addPages(() => {
+        return createEmbed({
+          title: school.toUpperCase(),
+          description: typeDetails.join("\n"),
+          fields: [
+            {
+              name: "Name",
+              value: names.join("\n"),
+              inline: true,
+            },
+            {
+              name: "SHS",
+              value: shsTypes.join("\n"),
+              inline: true,
+            },
+            {
+              name: "SCS",
+              value: scsTypes.join("\n"),
+              inline: true,
+            },
+          ],
+          footerText: `Page ${data.page}/${data.totalPages}`,
+        });
+      });
     }
 
     pagination
@@ -309,7 +303,11 @@ module.exports = {
 
     pagination.on("error", console.log);
 
-    await pagination.send({ command: interaction, sendAs: "ReplyMessage" });
+    await pagination.send({
+      command: interaction,
+      followUp: true,
+      sendAs: "ReplyMessage",
+    });
   },
 };
 
@@ -317,4 +315,5 @@ module.exports = {
 // - pagination
 // - fix search on the website (returns when subtype list contains a value and not values in sent order)
 // - mobile view
-// - clean up code (create static part of embeds might be a function)
+// - clean up the code
+// - deployment on prod should run `node src/deploy-commands.js` 
