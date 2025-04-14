@@ -31,11 +31,11 @@ Before you begin, ensure you have met the following requirements:
 
 3. **Setup Environment Variables**
 
-   Create a `.env` file in the root directory of the project and add your Discord bot token:
+   Create an `.env` file in the root directory of the project and add your Discord bot token:
 
    ```env
    DISCORD_TOKEN=your-discord-bot-token
-   CLIENT_ID=your-client-id
+   DISCORD_CLIENT_ID=your-client-id
    ```
 
 4. **Run the Bot**
@@ -50,15 +50,23 @@ Before you begin, ensure you have met the following requirements:
 
    Generate an invite link for your bot using the [Discord Developer Portal](https://discord.com/developers/applications) and invite the bot to your server.
 
-2. **Use Commands**
+2. **Install Commands**
+
+   ```bash
+   node src/deploy-commands.js
+   ```
+
+3. **Use Commands**
 
    Once the bot is in your server, use the commands listed below to interact with it.
 
 ## Commands
 
-| Command                                  | Description                                                  | Examples                                         |
-| ---------------------------------------- | ------------------------------------------------------------ | ------------------------------------------------ |
-| `/calculate [type1] [type2] ... [typeX]` | Calculate the integral type of the provided Socionics types. | `/calculate LSI EIE`<br>`/calculate SEI LIE SEE` |
+| Command                                                     | Description                                                   | Examples                                         |
+| ----------------------------------------------------------- | ------------------------------------------------------------- | ------------------------------------------------ |
+| `/calculate [type1] [type2] ... [typeX]`                    | Calculates the integral type of the provided Socionics types. | `/calculate LSI EIE`<br>`/calculate SEI LIE SEE` |
+| `/chart`                                                    | Prints a chart of intertype relationships.                    | `/chart`                                         |
+| `/help`                                                     | Displays the list of available commands.                      | `/help`                                          |
 
 ## Contributing
 

@@ -1,7 +1,9 @@
-require("dotenv").config();
+const dotenv = require("dotenv");
 const { REST, Routes } = require("discord.js");
 const fs = require("node:fs");
 const path = require("node:path");
+
+dotenv.config();
 
 const commands = [];
 
@@ -27,7 +29,7 @@ for (const folder of commandFolders) {
   }
 }
 
-const rest = new REST().setToken(process.env.TOKEN);
+const rest = new REST().setToken(process.env.DISCORD_TOKEN);
 
 (async () => {
   try {
@@ -36,7 +38,7 @@ const rest = new REST().setToken(process.env.TOKEN);
     );
 
     const data = await rest.put(
-      Routes.applicationCommands(process.env.CLIENT_ID),
+      Routes.applicationCommands(process.env.DISCORD_CLIENT_ID),
       { body: commands }
     );
 
