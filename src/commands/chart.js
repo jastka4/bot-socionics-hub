@@ -14,11 +14,10 @@ module.exports = {
       embeds: [
         new EmbedBuilder()
           .setColor(0xf1c40f)
-          .setTitle("Chart")
+          .setTitle("SHS intertype relationship chart")
           .addFields({
-            name: ":left_right_arrow: Type to relation mapping",
+            name: ":left_right_arrow: Types of relationships",
             value:
-              "_ _\n" +
               "**ILE** - identity\n" +
               "**LIE** - quasi-identity\n" +
               "**IEE** - kindred\n" +
