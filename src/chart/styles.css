@@ -1,0 +1,276 @@
+:root {
+    --header-lightness-step: 5;
+    --cell-lightness-step: 5;
+
+    --alpha-lightness-base-step: 30;
+    --beta-lightness-base-step: 55;
+    --gamma-lightness-base-step: 65;
+    --delta-lightness-base-step: 55;
+
+    /* ALPHA */
+    --alpha-base-color: #E6AC00;
+    --alpha-text-color: hsl(from var(--alpha-base-color) h s calc(l - 30));
+
+    --alpha-first-type-header-color: hsl(from var(--alpha-base-color) h s calc(l + var(--header-lightness-step)));
+    --alpha-second-type-header-color: hsl(from var(--alpha-first-type-header-color) h s calc(l + var(--header-lightness-step)));
+    --alpha-third-type-header-color: hsl(from var(--alpha-second-type-header-color) h s calc(l + var(--header-lightness-step)));
+    --alpha-forth-type-header-color: hsl(from var(--alpha-third-type-header-color) h s calc(l + var(--header-lightness-step)));
+
+    --alpha-first-type-cell-color: hsl(from var(--alpha-base-color) h s calc(l + var(--alpha-lightness-base-step)));
+    --alpha-second-type-cell-color: hsl(from var(--alpha-first-type-cell-color) h s calc(l + var(--cell-lightness-step)));
+    --alpha-third-type-cell-color: hsl(from var(--alpha-second-type-cell-color) h s calc(l + var(--cell-lightness-step)));
+    --alpha-forth-type-cell-color: hsl(from var(--alpha-third-type-cell-color) h s calc(l + var(--cell-lightness-step)));
+
+    /* BETA */
+    --beta-base-color: #6E0A1D;
+    --beta-text-color: hsl(from var(--beta-base-color) h s calc(l - 15));
+
+    --beta-first-type-header-color: var(--beta-base-color);
+    --beta-first-type-header-color: hsl(from var(--beta-base-color) h s calc(l + var(--header-lightness-step)));
+    --beta-second-type-header-color: hsl(from var(--beta-first-type-header-color) h s calc(l + var(--header-lightness-step)));
+    --beta-third-type-header-color: hsl(from var(--beta-second-type-header-color) h s calc(l + var(--header-lightness-step)));
+    --beta-forth-type-header-color: hsl(from var(--beta-third-type-header-color) h s calc(l + var(--header-lightness-step)));
+
+    --beta-first-type-cell-color: hsl(from var(--beta-base-color) h s calc(l + var(--beta-lightness-base-step)));
+    --beta-second-type-cell-color: hsl(from var(--beta-first-type-cell-color) h s calc(l + var(--cell-lightness-step)));
+    --beta-third-type-cell-color: hsl(from var(--beta-second-type-cell-color) h s calc(l + var(--cell-lightness-step)));
+    --beta-forth-type-cell-color: hsl(from var(--beta-third-type-cell-color) h s calc(l + var(--cell-lightness-step)));
+
+    /* GAMMA */
+    --gamma-base-color: #002147;
+    --gamma-text-color: hsl(from var(--gamma-base-color) h s calc(l - 5));
+
+    --gamma-first-type-header-color: var(--gamma-base-color);
+    --gamma-first-type-header-color: hsl(from var(--gamma-base-color) h s calc(l + var(--header-lightness-step)));
+    --gamma-second-type-header-color: hsl(from var(--gamma-first-type-header-color) h s calc(l + var(--header-lightness-step)));
+    --gamma-third-type-header-color: hsl(from var(--gamma-second-type-header-color) h s calc(l + var(--header-lightness-step)));
+    --gamma-forth-type-header-color: hsl(from var(--gamma-third-type-header-color) h s calc(l + var(--header-lightness-step)));
+
+    --gamma-first-type-cell-color: hsl(from var(--gamma-base-color) h s calc(l + var(--gamma-lightness-base-step)));
+    --gamma-second-type-cell-color: hsl(from var(--gamma-first-type-cell-color) h s calc(l + var(--cell-lightness-step)));
+    --gamma-third-type-cell-color: hsl(from var(--gamma-second-type-cell-color) h s calc(l + var(--cell-lightness-step)));
+    --gamma-forth-type-cell-color: hsl(from var(--gamma-third-type-cell-color) h s calc(l + var(--cell-lightness-step)));
+
+    /* DELTA */
+    --delta-base-color: #205823;
+    --delta-text-color: hsl(from var(--delta-base-color) h s calc(l - 30));
+
+    --delta-first-type-header-color: var(--delta-base-color);
+    --delta-first-type-header-color: hsl(from var(--delta-base-color) h s calc(l + var(--header-lightness-step)));
+    --delta-second-type-header-color: hsl(from var(--delta-first-type-header-color) h s calc(l + var(--header-lightness-step)));
+    --delta-third-type-header-color: hsl(from var(--delta-second-type-header-color) h s calc(l + var(--header-lightness-step)));
+    --delta-forth-type-header-color: hsl(from var(--delta-third-type-header-color) h s calc(l + var(--header-lightness-step)));
+
+    --delta-first-type-cell-color: hsl(from var(--delta-base-color) h s calc(l + var(--delta-lightness-base-step)));
+    --delta-second-type-cell-color: hsl(from var(--delta-first-type-cell-color) h s calc(l + var(--cell-lightness-step)));
+    --delta-third-type-cell-color: hsl(from var(--delta-second-type-cell-color) h s calc(l + var(--cell-lightness-step)));
+    --delta-forth-type-cell-color: hsl(from var(--delta-third-type-cell-color) h s calc(l + var(--cell-lightness-step)));
+}
+
+* {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+body {
+    font-family: sans-serif;
+    padding: 2rem;
+    background: #f9fafb;
+}
+
+table {
+    border-collapse: collapse;
+    table-layout: fixed;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+th,
+td {
+    padding: 0.75rem;
+    text-align: center;
+}
+
+thead th,
+tr th {
+    font-weight: bold;
+}
+
+.vertical {
+    writing-mode: sideways-lr;
+}
+
+.name-header {
+    color: white;
+    background-color: black;
+}
+
+.name-header,
+.quadra-header {
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* HEADERS */
+th.alpha {
+    background-color: var(--alpha-base-color);
+}
+
+th.beta {
+    color: white;
+    background-color: var(--beta-base-color);
+}
+
+th.gamma {
+    color: white;
+    background-color: var(--gamma-base-color);
+}
+
+th.delta {
+    color: white;
+    background-color: var(--delta-base-color);
+}
+
+td.alpha {
+    color: var(--alpha-text-color);
+}
+
+td.beta {
+    color: var(--beta-text-color);
+}
+
+td.gamma {
+    color: var(--gamma-text-color);
+}
+
+td.delta {
+    color: var(--delta-text-color);
+}
+
+th.alpha.first {
+    background-color: var(--alpha-first-type-header-color)
+}
+
+th.alpha.second {
+    background-color: var(--alpha-second-type-header-color)
+}
+
+th.alpha.third {
+    background-color: var(--alpha-third-type-header-color)
+}
+
+th.alpha.forth {
+    background-color: var(--alpha-forth-type-header-color)
+}
+
+th.beta.first {
+    background-color: var(--beta-first-type-header-color)
+}
+
+th.beta.second {
+    background-color: var(--beta-second-type-header-color)
+}
+
+th.beta.third {
+    background-color: var(--beta-third-type-header-color)
+}
+
+th.beta.forth {
+    background-color: var(--beta-forth-type-header-color)
+}
+
+th.gamma.first {
+    background-color: var(--gamma-first-type-header-color)
+}
+
+th.gamma.second {
+    background-color: var(--gamma-second-type-header-color)
+}
+
+th.gamma.third {
+    background-color: var(--gamma-third-type-header-color)
+}
+
+th.gamma.forth {
+    background-color: var(--gamma-forth-type-header-color)
+}
+
+th.delta.first {
+    background-color: var(--delta-first-type-header-color)
+}
+
+th.delta.second {
+    background-color: var(--delta-second-type-header-color)
+}
+
+th.delta.third {
+    background-color: var(--delta-third-type-header-color)
+}
+
+th.delta.forth {
+    background-color: var(--delta-forth-type-header-color)
+}
+
+/* CELLS */
+td.alpha.first {
+    background-color: var(--alpha-first-type-cell-color)
+}
+
+td.alpha.second {
+    background-color: var(--alpha-second-type-cell-color)
+}
+
+td.alpha.third {
+    background-color: var(--alpha-third-type-cell-color)
+}
+
+td.alpha.forth {
+    background-color: var(--alpha-forth-type-cell-color)
+}
+
+td.beta.first {
+    background-color: var(--beta-first-type-cell-color)
+}
+
+td.beta.second {
+    background-color: var(--beta-second-type-cell-color)
+}
+
+td.beta.third {
+    background-color: var(--beta-third-type-cell-color)
+}
+
+td.beta.forth {
+    background-color: var(--beta-forth-type-cell-color)
+}
+
+td.gamma.first {
+    background-color: var(--gamma-first-type-cell-color)
+}
+
+td.gamma.second {
+    background-color: var(--gamma-second-type-cell-color)
+}
+
+td.gamma.third {
+    background-color: var(--gamma-third-type-cell-color)
+}
+
+td.gamma.forth {
+    background-color: var(--gamma-forth-type-cell-color)
+}
+
+td.delta.first {
+    background-color: var(--delta-first-type-cell-color)
+}
+
+td.delta.second {
+    background-color: var(--delta-second-type-cell-color)
+}
+
+td.delta.third {
+    background-color: var(--delta-third-type-cell-color)
+}
+
+td.delta.forth {
+    background-color: var(--delta-forth-type-cell-color)
+}
