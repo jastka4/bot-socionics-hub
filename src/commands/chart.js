@@ -38,6 +38,7 @@ module.exports = {
           .setImage("attachment://chart.png"),
       ],
       files: [file],
+      ephemeral: true,
     });
   },
 };
