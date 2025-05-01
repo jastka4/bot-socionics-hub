@@ -1,11 +1,11 @@
 const {
   AttachmentBuilder,
   EmbedBuilder,
-  SlashCommandBuilder,
+  SlashCommandSubcommandBuilder,
 } = require("discord.js");
 
 module.exports = {
-  data: new SlashCommandBuilder()
+  data: new SlashCommandSubcommandBuilder()
     .setName("chart")
     .setDescription("Prints a chart of intertype relationships."),
   async execute(interaction) {

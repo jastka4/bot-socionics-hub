@@ -9,7 +9,7 @@ module.exports = {
 
     if (!command) {
       console.error(
-        `No command matching ${interaction.commandName} was found.`
+        `No command matching "/${interaction.commandName}" was found.`
       );
       return;
     }
@@ -17,7 +17,8 @@ module.exports = {
     try {
       await command.execute(interaction);
     } catch (error) {
-      console.error(error);
+      console.error(`[ERROR] Error executing "/${interaction.commandName}":`, error);
+
       if (interaction.replied || interaction.deferred) {
         await interaction.followUp({
           content: "There was an error while executing this command!",

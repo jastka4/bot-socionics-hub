@@ -1,0 +1,95 @@
+const fs = require('fs');
+const path = require('path');
+const { SlashCommandBuilder } = require('discord.js');
+
+function loadCommands(commandsDir) {
+  const commands = [];
+
+  for (const entry of fs.readdirSync(commandsDir, { withFileTypes: true })) {
+    const fullPath = path.join(commandsDir, entry.name);
+
+    if (entry.isFile() && entry.name.endsWith('.js')) {
+      const command = loadCommand(fullPath);
+      if (command) {
+        commands.push(command);
+      }
+    }
+
+    if (entry.isDirectory()) {
+      const builder = new SlashCommandBuilder()
+        .setName(entry.name)
+        .setDescription(`Commands for ${entry.name}`);
+      const dispatcher = {};
+
+      for (const subEntry of fs.readdirSync(fullPath, { withFileTypes: true })) {
+        const subPath = path.join(fullPath, subEntry.name);
+
+        if (subEntry.isFile() && subEntry.name.endsWith('.js')) {
+          const command = loadCommand(subPath);
+          if (command) {
+            builder.addSubcommand(command.data);
+            dispatcher[subEntry.name.replace('.js', '')] = command.execute;
+          }
+        }
+
+        if (subEntry.isDirectory()) {
+          builder.addSubcommandGroup(group =>
+            group.setName(subEntry.name).setDescription(`${subEntry.name} group`).addSubcommands(subBuilder => {
+              for (const file of fs.readdirSync(subPath).filter(file => file.endsWith('.js'))) {
+                const command = loadCommand(path.join(subPath, file));
+                if (command) {
+                  subBuilder.addSubcommand(command.data);
+                  dispatcher[`${subEntry.name}/${file.replace('.js', '')}`] = command.execute;
+                }
+              }
+              return subBuilder;
+            })
+          );
+        }
+      }
+
+      commands.push({
+        data: builder,
+        async execute(interaction) {
+          const group = interaction.options.getSubcommandGroup(false);
+          const sub = interaction.options.getSubcommand();
+          const key = group ? `${group}/${sub}` : sub;
+
+          const handler = dispatcher[key];
+          if (!handler) {
+            await interaction.reply({ content: 'Command not found.', ephemeral: true });
+            return;
+          }
+
+          try {
+            await handler(interaction);
+          } catch (err) {
+            console.error(`[ERROR] Execution error for ${key}:`, err);
+            await interaction.reply({ content: 'Execution failed.', ephemeral: true });
+          }
+        }
+      });
+    }
+  }
+
+  return commands;
+}
+
+function loadCommand(filePath) {
+  try {
+    const command = require(filePath);
+
+    if (!command.data || !command.execute) {
+      console.warn(
+        `[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.`
+      );
+    }
+
+    console.info(`[INFO] Loaded: ${filePath}`);
+    return command;
+  } catch (err) {
+    console.error(`[ERROR] Failed to load ${filePath}: ${err.message}`);
+  }
+}
+
+module.exports = { loadCommands };
