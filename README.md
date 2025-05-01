@@ -62,11 +62,11 @@ Before you begin, ensure you have met the following requirements:
 
 ## Commands
 
-| Command                                                     | Description                                                   | Examples                                         |
-| ----------------------------------------------------------- | ------------------------------------------------------------- | ------------------------------------------------ |
-| `/calculate [type1] [type2] ... [typeX]`                    | Calculates the integral type of the provided Socionics types. | `/calculate LSI EIE`<br>`/calculate SEI LIE SEE` |
-| `/chart`                                                    | Prints a chart of intertype relationships.                    | `/chart`                                         |
-| `/help`                                                     | Displays the list of available commands.                      | `/help`                                          |
+| Command                                           | Description                                                   | Examples                                                           |
+| ------------------------------------------------- | ------------------------------------------------------------- | ------------------------------------------------------------------ |
+| `/integral calculate [type1] [type2] ... [typeX]` | Calculates the integral type of the provided Socionics types. | `/integral calculate LSI EIE`<br>`/integral calculate SEI LIE SEE` |
+| `/integral chart`                                 | Prints a chart of intertype relationships.                    | `/integral chart`                                                  |
+| `/help`                                           | Displays the list of available commands.                      | `/help`                                                            |
 
 ## Contributing
 
