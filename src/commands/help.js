@@ -14,9 +14,9 @@ module.exports = {
             {
               name: ":computer: Commands",
               value:
-                "</calculate:1262564519499137124> - Calculates intertype relationship of provided types.\n" +
                 "</help:1265990525128020020> - Displays the list of available commands.\n" +
-                "</chart:1266106879378194463> - Prints a chart of intertype relationships.",
+                "</integral calculate:1262564519499137124> - Calculates intertype relationship of provided types.\n" +
+                "</integral chart:1266106879378194463> - Prints a chart of intertype relationships.",
             },
             {
               name: "_ _",

@@ -1,4 +1,4 @@
-const { EmbedBuilder, SlashCommandBuilder } = require("discord.js");
+const { EmbedBuilder, SlashCommandSubcommandBuilder } = require("discord.js");
 
 /*
 Map type to indicators (extroversion/introversion, intuition/sensing, logic/ethics, irrational/rational):
@@ -45,7 +45,7 @@ function findIntegralType(listOfTypes) {
 }
 
 module.exports = {
-  data: new SlashCommandBuilder()
+  data: new SlashCommandSubcommandBuilder()
     .setName("calculate")
     .setDescription("Calculates intertype relationship of provided types.")
     .addStringOption((option) =>
