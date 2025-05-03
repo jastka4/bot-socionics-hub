@@ -23,39 +23,7 @@ function loadCommands(commandsPath) {
     }
 
     if (entry.isDirectory()) {
-      const builder = new SlashCommandBuilder()
-        .setName(entry.name)
-        .setDescription(`Commands for ${entry.name}`);
-      const dispatcher = {};
-
-      for (const subEntry of readDirectory(fullPath)) {
-        const subPath = path.join(fullPath, subEntry.name);
-
-        if (isJavaScriptFile(subEntry)) {
-          const command = loadCommand(subPath);
-          if (command) {
-            builder.addSubcommand(command.data);
-            dispatcher[command.data.name] = command.execute;
-          }
-        }
-
-        if (subEntry.isDirectory()) {
-          builder.addSubcommandGroup(group =>
-            group.setName(subEntry.name)
-              .setDescription(`${subEntry.name} group`)
-              .addSubcommands(subBuilder => {
-                for (const file of readDirectory(subPath).filter(file => isJavaScriptFile(file))) {
-                  const command = loadCommand(path.join(subPath, file));
-                  if (command) {
-                    subBuilder.addSubcommand(command.data);
-                    dispatcher[`${subEntry.name}/${command.data.name}`] = command.execute;
-                  }
-                }
-                return subBuilder;
-              })
-          );
-        }
-      }
+      const { builder, dispatcher } = loadBranchedCommand(fullPath, entry.name);
 
       commands.push({
         data: builder,
@@ -83,6 +51,56 @@ function loadCommands(commandsPath) {
 
   return commands;
 }
+
+/**
+ * Builds a command with subcommands and optional subcommand groups.
+ *
+ * @param {string} groupPath - The path to load the command group from.
+ * @param {string} groupName - Name of the command group.
+ * @returns {{ builder: SlashCommandBuilder, dispatcher: Object }} Map of command "data" and "execute" properties.
+ */
+function loadBranchedCommand(groupPath, groupName) {
+  const builder = new SlashCommandBuilder()
+    .setName(groupName)
+    .setDescription(`Commands for ${groupName}`);
+
+  const dispatcher = {};
+
+  for (const subEntry of readDirectory(groupPath)) {
+    const subPath = path.join(groupPath, subEntry.name);
+
+    if (isJavaScriptFile(subEntry)) {
+      const command = loadCommand(subPath);
+      if (command) {
+        builder.addSubcommand(command.data);
+        dispatcher[command.data.name] = command.execute;
+      }
+    }
+
+    if (subEntry.isDirectory()) {
+      const subGroupName = subEntry.name;
+      builder.addSubcommandGroup(group =>
+        group
+          .setName(subGroupName)
+          .setDescription(`${subGroupName} group`)
+          .addSubcommands(subBuilder => {
+            for (const file of readDirectory(path.join(groupPath, subGroupName)).filter(isJavaScriptFile)) {
+              const filePath = path.join(groupPath, subGroupName, file.name);
+              const command = loadCommand(filePath);
+              if (command) {
+                subBuilder.addSubcommand(command.data);
+                dispatcher[`${subGroupName}/${command.data.name}`] = command.execute;
+              }
+            }
+            return subBuilder;
+          })
+      );
+    }
+  }
+
+  return { builder, dispatcher };
+}
+
 
 /**
  * Loads a Discord slash command from the given path.
