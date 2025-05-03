@@ -2,13 +2,20 @@ const fs = require('fs');
 const path = require('path');
 const { SlashCommandBuilder } = require('discord.js');
 
-function loadCommands(commandsDir) {
+/**
+ * Loads all Discord slash commands from a given directory.
+ * Supports nested commands with subcommands and subcommand groups.
+ *
+ * @param {string} commandsPath - Path to the root commands directory.
+ * @returns {Array<Object>} Array of command objects ready to register with Discord.
+ */
+function loadCommands(commandsPath) {
   const commands = [];
 
-  for (const entry of fs.readdirSync(commandsDir, { withFileTypes: true })) {
-    const fullPath = path.join(commandsDir, entry.name);
+  for (const entry of readDirectory(commandsPath)) {
+    const fullPath = path.join(commandsPath, entry.name);
 
-    if (entry.isFile() && entry.name.endsWith('.js')) {
+    if (isJavaScriptFile(entry)) {
       const command = loadCommand(fullPath);
       if (command) {
         commands.push(command);
@@ -21,29 +28,31 @@ function loadCommands(commandsDir) {
         .setDescription(`Commands for ${entry.name}`);
       const dispatcher = {};
 
-      for (const subEntry of fs.readdirSync(fullPath, { withFileTypes: true })) {
+      for (const subEntry of readDirectory(fullPath)) {
         const subPath = path.join(fullPath, subEntry.name);
 
-        if (subEntry.isFile() && subEntry.name.endsWith('.js')) {
+        if (isJavaScriptFile(subEntry)) {
           const command = loadCommand(subPath);
           if (command) {
             builder.addSubcommand(command.data);
-            dispatcher[subEntry.name.replace('.js', '')] = command.execute;
+            dispatcher[command.data.name] = command.execute;
           }
         }
 
         if (subEntry.isDirectory()) {
           builder.addSubcommandGroup(group =>
-            group.setName(subEntry.name).setDescription(`${subEntry.name} group`).addSubcommands(subBuilder => {
-              for (const file of fs.readdirSync(subPath).filter(file => file.endsWith('.js'))) {
-                const command = loadCommand(path.join(subPath, file));
-                if (command) {
-                  subBuilder.addSubcommand(command.data);
-                  dispatcher[`${subEntry.name}/${file.replace('.js', '')}`] = command.execute;
+            group.setName(subEntry.name)
+              .setDescription(`${subEntry.name} group`)
+              .addSubcommands(subBuilder => {
+                for (const file of readDirectory(subPath).filter(file => isJavaScriptFile(file))) {
+                  const command = loadCommand(path.join(subPath, file));
+                  if (command) {
+                    subBuilder.addSubcommand(command.data);
+                    dispatcher[`${subEntry.name}/${command.data.name}`] = command.execute;
+                  }
                 }
-              }
-              return subBuilder;
-            })
+                return subBuilder;
+              })
           );
         }
       }
@@ -75,6 +84,12 @@ function loadCommands(commandsDir) {
   return commands;
 }
 
+/**
+ * Loads a Discord slash command from the given path.
+ * 
+ * @param {string} filePath - The path to load the command from.
+ * @returns {Object|undefined} The command object with `data` and `execute`, or undefined if couldn't be loaded.
+ */
 function loadCommand(filePath) {
   try {
     const command = require(filePath);
@@ -90,6 +105,26 @@ function loadCommand(filePath) {
   } catch (err) {
     console.error(`[ERROR] Failed to load ${filePath}: ${err.message}`);
   }
+}
+
+/**
+ * Reads directory entries with file types metadata.
+ *
+ * @param {string} dirPath - Path to the directory.
+ * @returns {fs.Dirent[]} List of directory entries.
+ */
+function readDirectory(dirPath) {
+  return fs.readdirSync(dirPath, { withFileTypes: true });
+}
+
+/**
+ * Checks if the entry is a JavaScript file.
+ *
+ * @param {fs.Dirent} entry - Name of the file.
+ * @returns {boolean} True if it ends with `.js`.
+ */
+function isJavaScriptFile(entry) {
+  return entry.isFile() && entry.name.endsWith('.js');
 }
 
 module.exports = { loadCommands };
