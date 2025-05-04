@@ -1,6 +1,6 @@
-const fs = require('fs');
-const path = require('path');
-const { SlashCommandBuilder } = require('discord.js');
+import { SlashCommandBuilder } from 'discord.js';
+import { Dirent, readdirSync } from 'node:fs';
+import { join } from 'node:path';
 
 /**
  * Loads all Discord slash commands from a given directory.
@@ -9,21 +9,21 @@ const { SlashCommandBuilder } = require('discord.js');
  * @param {string} commandsPath - Path to the root commands directory.
  * @returns {Array<Object>} Array of command objects ready to register with Discord.
  */
-function loadCommands(commandsPath) {
+export async function loadCommands(commandsPath) {
   const commands = [];
 
   for (const entry of readDirectory(commandsPath)) {
-    const fullPath = path.join(commandsPath, entry.name);
+    const fullPath = join(commandsPath, entry.name);
 
     if (isJavaScriptFile(entry)) {
-      const command = loadCommand(fullPath);
+      const command = await loadCommand(fullPath);
       if (command) {
         commands.push(command);
       }
     }
 
     if (entry.isDirectory()) {
-      const { builder, dispatcher } = loadBranchedCommand(fullPath, entry.name);
+      const { builder, dispatcher } = await loadBranchedCommand(fullPath, entry.name);
 
       commands.push({
         data: builder,
@@ -59,7 +59,7 @@ function loadCommands(commandsPath) {
  * @param {string} groupName - Name of the command group.
  * @returns {{ builder: SlashCommandBuilder, dispatcher: Object }} Map of command "data" and "execute" properties.
  */
-function loadBranchedCommand(groupPath, groupName) {
+async function loadBranchedCommand(groupPath, groupName) {
   const builder = new SlashCommandBuilder()
     .setName(groupName)
     .setDescription(`Commands for ${groupName}`);
@@ -67,10 +67,11 @@ function loadBranchedCommand(groupPath, groupName) {
   const dispatcher = {};
 
   for (const subEntry of readDirectory(groupPath)) {
-    const subPath = path.join(groupPath, subEntry.name);
+    const subPath = join(groupPath, subEntry.name);
 
     if (isJavaScriptFile(subEntry)) {
-      const command = loadCommand(subPath);
+      const command = await loadCommand(subPath);
+
       if (command) {
         builder.addSubcommand(command.data);
         dispatcher[command.data.name] = command.execute;
@@ -79,28 +80,28 @@ function loadBranchedCommand(groupPath, groupName) {
 
     if (subEntry.isDirectory()) {
       const subGroupName = subEntry.name;
-      builder.addSubcommandGroup(group =>
-        group
+      const groupBuilder = builder.addSubcommandGroup(subGroup =>
+        subGroup
           .setName(subGroupName)
           .setDescription(`${subGroupName} group`)
-          .addSubcommands(subBuilder => {
-            for (const file of readDirectory(path.join(groupPath, subGroupName)).filter(isJavaScriptFile)) {
-              const filePath = path.join(groupPath, subGroupName, file.name);
-              const command = loadCommand(filePath);
-              if (command) {
-                subBuilder.addSubcommand(command.data);
-                dispatcher[`${subGroupName}/${command.data.name}`] = command.execute;
-              }
-            }
-            return subBuilder;
-          })
       );
+
+      await Promise.all(readDirectory(join(groupPath, subGroupName))
+        .filter(isJavaScriptFile)
+        .map(async (file) => {
+          const filePath = join(groupPath, subGroupName, file.name);
+          const command = await loadCommand(filePath);
+
+          if (command) {
+            groupBuilder.options.at(-1).addSubcommand(command.data);
+            dispatcher[`${subGroupName}/${command.data.name}`] = command.execute;
+          }
+        }));
     }
   }
 
   return { builder, dispatcher };
 }
-
 
 /**
  * Loads a Discord slash command from the given path.
@@ -108,13 +109,17 @@ function loadBranchedCommand(groupPath, groupName) {
  * @param {string} filePath - The path to load the command from.
  * @returns {Object|undefined} The command object with `data` and `execute`, or undefined if couldn't be loaded.
  */
-function loadCommand(filePath) {
+async function loadCommand(filePath) {
   try {
-    const command = require(filePath);
-
-    if (!command.data || !command.execute) {
+    const { command } = await import(filePath)
+    if (!command.data) {
       console.warn(
-        `[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.`
+        `[WARNING] The command at ${filePath} is missing a required "data" property.`
+      );
+    }
+    if (!command.execute) {
+      console.warn(
+        `[WARNING] The command at ${filePath} is missing a required "execute" property.`
       );
     }
 
@@ -129,20 +134,18 @@ function loadCommand(filePath) {
  * Reads directory entries with file types metadata.
  *
  * @param {string} dirPath - Path to the directory.
- * @returns {fs.Dirent[]} List of directory entries.
+ * @returns {Dirent[]} List of directory entries.
  */
 function readDirectory(dirPath) {
-  return fs.readdirSync(dirPath, { withFileTypes: true });
+  return readdirSync(dirPath, { withFileTypes: true });
 }
 
 /**
  * Checks if the entry is a JavaScript file.
  *
- * @param {fs.Dirent} entry - Name of the file.
+ * @param {Dirent} entry - Name of the file.
  * @returns {boolean} True if it ends with `.js`.
  */
 function isJavaScriptFile(entry) {
   return entry.isFile() && entry.name.endsWith('.js');
 }
-
-module.exports = { loadCommands };

@@ -1,4 +1,4 @@
-const { EmbedBuilder, SlashCommandSubcommandBuilder } = require("discord.js");
+import { EmbedBuilder, SlashCommandSubcommandBuilder } from "discord.js";
 
 /*
 Map type to indicators (extroversion/introversion, intuition/sensing, logic/ethics, irrational/rational):
@@ -44,17 +44,16 @@ function findIntegralType(listOfTypes) {
   });
 }
 
-module.exports = {
+export const command = {
   data: new SlashCommandSubcommandBuilder()
     .setName("calculate")
     .setDescription("Calculates intertype relationship of provided types.")
-    .addStringOption((option) =>
-      option
-        .setName("types")
-        .setDescription(
-          "List of types in the three-letter notation (separated by space)."
-        )
-        .setRequired(true)
+    .addStringOption((option) => option
+      .setName("types")
+      .setDescription(
+        "List of types in the three-letter notation (separated by space)."
+      )
+      .setRequired(true)
     ),
   async execute(interaction) {
     const rawValue = interaction.options.get("types").value.toUpperCase();
@@ -86,5 +85,5 @@ module.exports = {
         ],
       });
     }
-  },
-};
+  }
+}

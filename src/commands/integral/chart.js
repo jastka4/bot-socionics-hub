@@ -1,10 +1,6 @@
-const {
-  AttachmentBuilder,
-  EmbedBuilder,
-  SlashCommandSubcommandBuilder,
-} = require("discord.js");
+import { AttachmentBuilder, EmbedBuilder, SlashCommandSubcommandBuilder } from "discord.js";
 
-module.exports = {
+export const command = {
   data: new SlashCommandSubcommandBuilder()
     .setName("chart")
     .setDescription("Prints a chart of intertype relationships."),
@@ -17,8 +13,7 @@ module.exports = {
           .setTitle("SHS intertype relationship chart")
           .addFields({
             name: ":left_right_arrow: Types of relationships",
-            value:
-              "**ILE** - identity\n" +
+            value: "**ILE** - identity\n" +
               "**LIE** - quasi-identity\n" +
               "**IEE** - kindred\n" +
               "**EIE** - reverse benefit\n" +
@@ -40,5 +35,5 @@ module.exports = {
       files: [file],
       ephemeral: true,
     });
-  },
-};
+  }
+}

@@ -1,6 +1,6 @@
-const { EmbedBuilder, SlashCommandBuilder } = require("discord.js");
+import { EmbedBuilder, SlashCommandBuilder } from "discord.js";
 
-module.exports = {
+export const command = {
   data: new SlashCommandBuilder()
     .setName("help")
     .setDescription("Displays the list of available commands."),
@@ -33,5 +33,5 @@ module.exports = {
       ],
       ephemeral: true,
     });
-  },
-};
+  }
+}

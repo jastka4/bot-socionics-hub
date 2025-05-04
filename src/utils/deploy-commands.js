@@ -1,15 +1,17 @@
-const dotenv = require("dotenv");
-const { REST, Routes } = require("discord.js");
-const fs = require("node:fs");
-const path = require("node:path");
+import { REST, Routes } from "discord.js";
+import { config } from "dotenv";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from 'node:url';
 
-const { loadCommands } = require('./load-commands');
+import { loadCommands } from './load-commands.js';
 
-dotenv.config();
+config();
 
-const commands = loadCommands(path.join(__dirname, "../commands")).map(cmd => cmd.data.toJSON());
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const rest = new REST().setToken(process.env.DISCORD_TOKEN);
+const commands = (await loadCommands(join(__dirname, "../commands"))).map(cmd => cmd.data.toJSON());
 
 (async () => {
   try {
