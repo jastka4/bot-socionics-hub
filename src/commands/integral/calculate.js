@@ -1,49 +1,26 @@
 import { EmbedBuilder, SlashCommandSubcommandBuilder } from "discord.js";
 
-/*
-Map type to indicators (extroversion/introversion, intuition/sensing, logic/ethics, irrational/rational):
-- extroversion = 0,
-- introversion = 1,
-- intuition = 0,
-- sensing = 1,
-- logic = 0,
-- ethics = 1,
-- irrational = 0,
-- rational = 1.
+import { calculateIntegralTypeIndicator, getKeyByValue, isValid, typeIndicators } from "../../shared/integral-shared.js";
 
-Example: EIE = ENFj = 0, 0, 1, 1 = 3
-*/
-const typeIndicators = new Map([
-  ["ILE", 0],
-  ["LIE", 1],
-  ["IEE", 2],
-  ["EIE", 3],
-  ["SLE", 4],
-  ["LSE", 5],
-  ["SEE", 6],
-  ["ESE", 7],
-  ["ILI", 8],
-  ["LII", 9],
-  ["IEI", 10],
-  ["EII", 11],
-  ["SLI", 12],
-  ["LSI", 13],
-  ["SEI", 14],
-  ["ESI", 15],
-]);
-
-function getKeyByValue(map, value) {
-  return [...map].find(([key, val]) => val === value)[0];
+/**
+ * Calculates the integral type of the provided types.
+ *
+ * The integral type is calculated by XOR'ing all the numeric values of the input types,
+ * and then mapping the resulting number back to the corresponding Socionics type.
+ *
+ * @param {string[]} types - An array of types (e.g. ["ILE", "LIE", "SEI"]).
+ * @returns {string|undefined} - The resulting integral type, or undefined if not found.
+ */
+function calculateIntegralType(types) {
+  return getKeyByValue(typeIndicators, calculateIntegralTypeIndicator(types));
 }
 
-function findIntegralType(listOfTypes) {
-  return listOfTypes.reduce((accumulator, currentValue) => {
-    const integralTypeIdicator =
-      typeIndicators.get(accumulator) ^ typeIndicators.get(currentValue);
-    return getKeyByValue(typeIndicators, integralTypeIdicator);
-  });
-}
-
+/**
+ * Discord slash command that calculates the integral type of the provided Socionics types.
+ *
+ * Command usage example:
+ * `/integral calculate types: LSI EIE LIE`
+ */
 export const command = {
   data: new SlashCommandSubcommandBuilder()
     .setName("calculate")
@@ -53,15 +30,13 @@ export const command = {
       .setDescription(
         "List of types in the three-letter notation (separated by space)."
       )
-      .setRequired(true)
-    ),
+      .setRequired(true)),
   async execute(interaction) {
     const rawValue = interaction.options.get("types").value.toUpperCase();
-    const regex = /^(([LE][IS][IE]|[IS][LE][IE]) ?)*$/;
 
-    if (regex.test(rawValue)) {
+    if (isValid(rawValue)) {
       const listOfTypes = rawValue.split(" ");
-      const result = findIntegralType(listOfTypes);
+      const result = calculateIntegralType(listOfTypes);
 
       await interaction.reply({
         embeds: [
@@ -80,9 +55,10 @@ export const command = {
             .setDescription(interaction.options.get("types").value)
             .addFields({
               name: "Usage example",
-              value: "`/calculate LSI EIE LIE`",
+              value: "`/integral calculate 'types: LSI EIE LIE'`",
             }),
         ],
+        ephemeral: true,
       });
     }
   }

@@ -1,7 +1,7 @@
 {
   "name": "bot-integral-type-calculator",
   "version": "1.0.0",
-  "description": "Discord bot capable of calculating the integral type of Socionics relationships.",
+  "description": "Discord bot of the Socionics Hub website.",
   "main": "src/index.js",
   "scripts": {
     "start": "node src/index.js",
