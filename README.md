@@ -62,11 +62,13 @@ Before you begin, ensure you have met the following requirements:
 
 ## Commands
 
-| Command                                           | Description                                                   | Examples                                                           |
-| ------------------------------------------------- | ------------------------------------------------------------- | ------------------------------------------------------------------ |
-| `/integral calculate [type1] [type2] ... [typeX]` | Calculates the integral type of the provided Socionics types. | `/integral calculate LSI EIE`<br>`/integral calculate SEI LIE SEE` |
-| `/integral chart`                                 | Prints a chart of intertype relationships.                    | `/integral chart`                                                  |
-| `/help`                                           | Displays the list of available commands.                      | `/help`                                                            |
+| Command                                                                               | Description                                                                                          | Examples                                                                             |
+| ------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| `/help`                                                                               | Displays the list of available commands.                                                             | `/help`                                                                              |
+| `/integral chart`                                                                     | Prints a chart of intertype relationships.                                                           | `/integral chart`                                                                    |
+| `/integral calculate [type1] [type2] ... [typeX]`                                     | Calculates the integral type of the provided Socionics types.                                        | `/integral calculate 'types: LSI EIE'`<br>`/integral calculate 'types: SEI LIE SEE'` |
+| `/integral combinations get 'target: [type]'`                                         | Finds all proper subsets of types that combine into the specified target integral type.              | `/integral combinations get 'target: LIE'`                                           |
+| `/integral combinations subset 'types: [type1] [type2] ... [typeX]' 'target: [type]'` | Finds all proper subsets of the provided types that combine into the specified target integral type. | `/integral combinations subset 'types: LII LII IEI SLE LIE ILE' 'target: ILE'`       |
 
 ## Contributing
 
