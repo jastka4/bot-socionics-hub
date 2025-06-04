@@ -1,4 +1,4 @@
-import { EmbedBuilder, SlashCommandSubcommandBuilder } from "discord.js";
+import { EmbedBuilder, MessageFlags, SlashCommandSubcommandBuilder } from "discord.js";
 
 import { calculateIntegralTypeIndicator, getKeyByValue, isValid, typeIndicators } from "../../shared/integral-shared.js";
 
@@ -53,12 +53,18 @@ export const command = {
             .setColor(0xf1c40f)
             .setTitle("❗️ Wrong format ❗️")
             .setDescription(interaction.options.get("types").value)
-            .addFields({
-              name: "Usage example",
-              value: "`/integral calculate 'types: LSI EIE LIE'`",
-            }),
+            .addFields(
+              {
+                name: "Usage example",
+                value: "`/integral calculate 'types: LSI EIE LIE'`",
+              },
+              {
+                name: "Limit",
+                value: `The number of types to process is limited to ${parseInt(process.env.INTEGRAL_MAX_SUBSETS)}.`,
+              }
+            ),
         ],
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     }
   }

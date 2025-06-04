@@ -1,3 +1,5 @@
+import "dotenv/config"
+
 /**
  * Regular expression that matches a string of Socionics types in three-letter notation.
  *
@@ -5,10 +7,11 @@
  * LSI, EIE, ILE, SEE, etc.
  *
  * This pattern allows multiple valid types separated by spaces (e.g. "LSI ILE SEE").
+ * Limited by the INTEGRAL_MAX_SUBSETS environment variable.
  *
  * @constant {RegExp}
  */
-const typeNameRegex = /^(([LE][IS][IE]|[IS][LE][IE]) ?)*$/;
+const typeNameRegex = new RegExp(`^(([LE][IS][IE]|[IS][LE][IE]) ?){1,${parseInt(process.env.INTEGRAL_MAX_SUBSETS)}}$`);
 
 /**
 * Map type to indicators (extroversion/introversion, intuition/sensing, logic/ethics, irrational/rational):
@@ -87,7 +90,7 @@ export function getUniqueSubsets(types, target) {
     const combinations = [];
     const seen = new Set();
 
-    for (let i = 0; i < (1 << types.length); i++) {
+    for (let i = 1; i < (1 << types.length); i++) {
         const combination = [];
         for (let j = 0; j < types.length; j++) {
             if (i & (1 << j)) {
@@ -106,17 +109,15 @@ export function getUniqueSubsets(types, target) {
         }
     }
 
-    return combinations;
+    return combinations.sort((a, b) => a.length - b.length);
 }
 
 /**
  * Formats a list of type subsets as a readable string for output.
  * 
  * @param {string[][]} subsets - Array of type subsets.
- * @returns {string} - A formatted multiline string listing each subset.
+ * @returns {string[]} - A formatted array of all the subsets.
  */
 export function format(subsets) {
-    return subsets
-        .map((combination) => `\\- ${combination.join(", ")}`)
-        .join("\n");
+    return subsets.map((combination, index) => `#${index + 1}: ${combination.join(", ")}`)
 }

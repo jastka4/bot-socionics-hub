@@ -1,5 +1,13 @@
-import { EmbedBuilder, SlashCommandBuilder } from "discord.js";
+import { EmbedBuilder, MessageFlags, SlashCommandBuilder } from "discord.js";
 
+/**
+ * Slash command definition for the "help" subcommand.
+ * 
+ * This command prints all available commands and some links to theory.
+ * 
+ * Command usage example:
+ * `/help`
+ */
 export const command = {
   data: new SlashCommandBuilder()
     .setName("help")
@@ -14,9 +22,11 @@ export const command = {
             {
               name: ":computer: Commands",
               value:
-                "</help:1265990525128020020> - Displays the list of available commands.\n" +
-                "</integral calculate:1262564519499137124> - Calculates intertype relationship of provided types.\n" +
-                "</integral chart:1266106879378194463> - Prints a chart of intertype relationships.",
+                "</help:1368693827489234956> - Displays the list of available commands.\n" +
+                "</integral calculate:1368190028907544728> - Calculates intertype relationship of provided types.\n" +
+                "</integral chart:1368190028907544728> - Prints a chart of intertype relationships.\n" +
+                "</integral combinations get:1368190028907544728> - Finds all proper subsets of types that combine into the specified target integral type.\n" +
+                "</integral combinations subset:1368190028907544728> - Finds all proper subsets of the provided types that combine into the specified target integral type.",
             },
             {
               name: "_ _",
@@ -31,7 +41,7 @@ export const command = {
             }
           ),
       ],
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     });
   }
 }
