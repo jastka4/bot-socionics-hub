@@ -46,7 +46,7 @@ for (const file of eventFiles) {
   }
 }
 
-client.login(process.env.TOKEN);
+client.login(process.env.DISCORD_TOKEN);
 
 app.get("/health", (req, res) => {
   res.status(200).send("OK");
