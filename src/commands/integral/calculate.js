@@ -1,6 +1,16 @@
-import { EmbedBuilder, MessageFlags, SlashCommandSubcommandBuilder } from "discord.js";
+import {
+  EmbedBuilder,
+  MessageFlags,
+  SlashCommandSubcommandBuilder,
+  escapeMarkdown,
+} from "discord.js";
 
-import { calculateIntegralTypeIndicator, getKeyByValue, isValid, typeIndicators } from "../../shared/integral-shared.js";
+import {
+  calculateIntegralTypeIndicator,
+  getKeyByValue,
+  isValid,
+  typeIndicators,
+} from "../../shared/integral-shared.js";
 
 /**
  * Calculates the integral type of the provided types.
@@ -25,12 +35,14 @@ export const command = {
   data: new SlashCommandSubcommandBuilder()
     .setName("calculate")
     .setDescription("Calculates intertype relationship of provided types.")
-    .addStringOption((option) => option
-      .setName("types")
-      .setDescription(
-        "List of types in the three-letter notation (separated by space)."
-      )
-      .setRequired(true)),
+    .addStringOption((option) =>
+      option
+        .setName("types")
+        .setDescription(
+          "List of types in the three-letter notation (separated by space).",
+        )
+        .setRequired(true),
+    ),
   async execute(interaction) {
     const rawValue = interaction.options.get("types").value.toUpperCase();
 
@@ -42,8 +54,10 @@ export const command = {
         embeds: [
           new EmbedBuilder()
             .setColor(0xf1c40f)
-            .setTitle(result)
-            .setDescription(listOfTypes.join(", ")),
+            .setTitle(`Integral type is ${result}`)
+            .setDescription(
+              `Combined types:\n${listOfTypes.map((type) => `\`${type}\``).join(", ")}.`,
+            ),
         ],
       });
     } else {
@@ -51,21 +65,25 @@ export const command = {
         embeds: [
           new EmbedBuilder()
             .setColor(0xf1c40f)
-            .setTitle("❗️ Wrong format ❗️")
-            .setDescription(interaction.options.get("types").value)
+            .setTitle("❗️ Invalid input ❗️")
             .addFields(
               {
-                name: "Usage example",
-                value: "`/integral calculate 'types: LSI EIE LIE'`",
+                name: "Your input",
+                value: `\`${escapeMarkdown(interaction.options.get("types").value)}\``,
+              },
+              {
+                name: "Expected format",
+                value:
+                  "Enter types in three-letter notation separated by spaces, for example `LSI EIE LIE`.",
               },
               {
                 name: "Limit",
                 value: `The number of types to process is limited to ${parseInt(process.env.INTEGRAL_MAX_SUBSETS)}.`,
-              }
+              },
             ),
         ],
         flags: MessageFlags.Ephemeral,
       });
     }
-  }
-}
+  },
+};
