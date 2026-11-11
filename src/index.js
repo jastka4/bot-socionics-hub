@@ -1,19 +1,26 @@
-import { Client, Collection, IntentsBitField } from "discord.js";
+import { Client, Collection, Events, IntentsBitField } from "discord.js";
 import { config } from "dotenv";
 import express from "express";
 import { readdirSync } from "node:fs";
 import { dirname, join } from "node:path";
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath } from "node:url";
 
-import { loadCommands } from './utils/load-commands.js';
+import { loadCommands } from "./utils/load-commands.js";
 
-config()
+config();
+
+if (!process.env.DISCORD_TOKEN) {
+  throw new Error("DISCORD_TOKEN is required");
+}
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
+const port = Number(process.env.PORT || 3000);
 
-const app = express();
-const port = process.env.PORT || 3000;
+function failStartup(error) {
+  console.error("[ERROR] Startup failed:", error);
+  process.exit(1);
+}
 
 const client = new Client({
   intents: [
@@ -26,32 +33,54 @@ const client = new Client({
 
 client.commands = new Collection();
 
-const commands = await loadCommands(join(__dirname, "commands"));
-commands.forEach((command) => {
-  client.commands.set(command.data.name, command);
+client.on(Events.Error, (error) => {
+  console.error("[ERROR] Discord client error:", error);
 });
 
-const eventsPath = join(__dirname, "events");
-const eventFiles = readdirSync(eventsPath)
-  .filter((file) => file.endsWith(".js"));
+client.on(Events.ShardError, (error) => {
+  console.error("[ERROR] Discord connection error:", error);
+});
 
-for (const file of eventFiles) {
-  const filePath = join(eventsPath, file);
-  const { event } = await import(filePath);
+try {
+  const commands = await loadCommands(join(__dirname, "commands"));
+  commands.forEach((command) => {
+    client.commands.set(command.data.name, command);
+  });
 
-  if (event.once) {
-    client.once(event.name, (...args) => event.execute(...args));
-  } else {
-    client.on(event.name, (...args) => event.execute(...args));
+  const eventsPath = join(__dirname, "events");
+  const eventFiles = readdirSync(eventsPath).filter((file) =>
+    file.endsWith(".js"),
+  );
+
+  for (const file of eventFiles) {
+    const filePath = join(eventsPath, file);
+    const { event } = await import(filePath);
+    const handler = async (...args) => event.execute(...args);
+
+    if (event.once) {
+      client.once(event.name, handler);
+    } else {
+      client.on(event.name, handler);
+    }
   }
+
+  await client.login(process.env.DISCORD_TOKEN);
+} catch (error) {
+  failStartup(error);
 }
 
-client.login(process.env.DISCORD_TOKEN);
+const app = express();
 
 app.get("/health", (req, res) => {
+  if (!client.isReady()) {
+    return res.status(503).send("Discord client is not ready");
+  }
+
   res.status(200).send("OK");
 });
 
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
-});
+app
+  .listen(port, () => {
+    console.log(`Server is running on port ${port}`);
+  })
+  .on("error", failStartup);
