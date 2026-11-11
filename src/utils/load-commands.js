@@ -1,6 +1,6 @@
-import { SlashCommandBuilder } from 'discord.js';
-import { Dirent, readdirSync } from 'node:fs';
-import { join } from 'node:path';
+import { MessageFlags, SlashCommandBuilder } from "discord.js";
+import { Dirent, readdirSync } from "node:fs";
+import { join } from "node:path";
 
 /**
  * Loads all Discord slash commands from a given directory.
@@ -23,7 +23,10 @@ export async function loadCommands(commandsPath) {
     }
 
     if (entry.isDirectory()) {
-      const { builder, dispatcher } = await loadBranchedCommand(fullPath, entry.name);
+      const { builder, dispatcher } = await loadBranchedCommand(
+        fullPath,
+        entry.name,
+      );
 
       commands.push({
         data: builder,
@@ -34,7 +37,10 @@ export async function loadCommands(commandsPath) {
 
           const handler = dispatcher[key];
           if (!handler) {
-            await interaction.reply({ content: 'Command not found.', ephemeral: true });
+            await interaction.reply({
+              content: "Command not found.",
+              flags: MessageFlags.Ephemeral,
+            });
             return;
           }
 
@@ -42,9 +48,12 @@ export async function loadCommands(commandsPath) {
             await handler(interaction);
           } catch (err) {
             console.error(`[ERROR] Execution error for ${key}:`, err);
-            await interaction.reply({ content: 'Execution failed.', ephemeral: true });
+            await interaction.reply({
+              content: "Execution failed.",
+              flags: MessageFlags.Ephemeral,
+            });
           }
-        }
+        },
       });
     }
   }
@@ -80,23 +89,24 @@ async function loadBranchedCommand(groupPath, groupName) {
 
     if (subEntry.isDirectory()) {
       const subGroupName = subEntry.name;
-      const groupBuilder = builder.addSubcommandGroup(subGroup =>
-        subGroup
-          .setName(subGroupName)
-          .setDescription(`${subGroupName} group`)
+      const groupBuilder = builder.addSubcommandGroup((subGroup) =>
+        subGroup.setName(subGroupName).setDescription(`${subGroupName} group`),
       );
 
-      await Promise.all(readDirectory(join(groupPath, subGroupName))
-        .filter(isJavaScriptFile)
-        .map(async (file) => {
-          const filePath = join(groupPath, subGroupName, file.name);
-          const command = await loadCommand(filePath);
+      await Promise.all(
+        readDirectory(join(groupPath, subGroupName))
+          .filter(isJavaScriptFile)
+          .map(async (file) => {
+            const filePath = join(groupPath, subGroupName, file.name);
+            const command = await loadCommand(filePath);
 
-          if (command) {
-            groupBuilder.options.at(-1).addSubcommand(command.data);
-            dispatcher[`${subGroupName}/${command.data.name}`] = command.execute;
-          }
-        }));
+            if (command) {
+              groupBuilder.options.at(-1).addSubcommand(command.data);
+              dispatcher[`${subGroupName}/${command.data.name}`] =
+                command.execute;
+            }
+          }),
+      );
     }
   }
 
@@ -105,21 +115,21 @@ async function loadBranchedCommand(groupPath, groupName) {
 
 /**
  * Loads a Discord slash command from the given path.
- * 
+ *
  * @param {string} filePath - The path to load the command from.
  * @returns {Object|undefined} The command object with `data` and `execute`, or undefined if couldn't be loaded.
  */
 async function loadCommand(filePath) {
   try {
-    const { command } = await import(filePath)
+    const { command } = await import(filePath);
     if (!command.data) {
       console.warn(
-        `[WARNING] The command at ${filePath} is missing a required "data" property.`
+        `[WARNING] The command at ${filePath} is missing a required "data" property.`,
       );
     }
     if (!command.execute) {
       console.warn(
-        `[WARNING] The command at ${filePath} is missing a required "execute" property.`
+        `[WARNING] The command at ${filePath} is missing a required "execute" property.`,
       );
     }
 
@@ -147,5 +157,5 @@ function readDirectory(dirPath) {
  * @returns {boolean} True if it ends with `.js`.
  */
 function isJavaScriptFile(entry) {
-  return entry.isFile() && entry.name.endsWith('.js');
+  return entry.isFile() && entry.name.endsWith(".js");
 }

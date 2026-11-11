@@ -1,4 +1,8 @@
-import { AttachmentBuilder, EmbedBuilder, SlashCommandSubcommandBuilder } from "discord.js";
+import {
+  AttachmentBuilder,
+  EmbedBuilder,
+  SlashCommandSubcommandBuilder,
+} from "discord.js";
 
 export const command = {
   data: new SlashCommandSubcommandBuilder()
@@ -13,7 +17,8 @@ export const command = {
           .setTitle("SHS intertype relationship chart")
           .addFields({
             name: ":left_right_arrow: Types of relationships",
-            value: "**ILE** - identity\n" +
+            value:
+              "**ILE** - identity\n" +
               "**LIE** - quasi-identity\n" +
               "**IEE** - kindred\n" +
               "**EIE** - reverse benefit\n" +
@@ -33,7 +38,6 @@ export const command = {
           .setImage("attachment://chart.png"),
       ],
       files: [file],
-      ephemeral: true,
     });
-  }
-}
+  },
+};

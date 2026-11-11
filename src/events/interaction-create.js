@@ -1,4 +1,4 @@
-import { Events } from "discord.js";
+import { Events, MessageFlags } from "discord.js";
 
 export const event = {
   name: Events.InteractionCreate,
@@ -9,7 +9,7 @@ export const event = {
 
     if (!command) {
       console.error(
-        `No command matching "/${interaction.commandName}" was found.`
+        `No command matching "/${interaction.commandName}" was found.`,
       );
       return;
     }
@@ -17,19 +17,22 @@ export const event = {
     try {
       await command.execute(interaction);
     } catch (error) {
-      console.error(`[ERROR] Error executing "/${interaction.commandName}":`, error);
+      console.error(
+        `[ERROR] Error executing "/${interaction.commandName}":`,
+        error,
+      );
 
       if (interaction.replied || interaction.deferred) {
         await interaction.followUp({
           content: "There was an error while executing this command!",
-          ephemeral: true,
+          flags: MessageFlags.Ephemeral,
         });
       } else {
         await interaction.reply({
           content: "There was an error while executing this command!",
-          ephemeral: true,
+          flags: MessageFlags.Ephemeral,
         });
       }
     }
-  }
-}
+  },
+};
