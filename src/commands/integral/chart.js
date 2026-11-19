@@ -18,22 +18,22 @@ export const command = {
           .addFields({
             name: ":left_right_arrow: Types of relationships",
             value:
-              "**ILE** - identity\n" +
-              "**LIE** - quasi-identity\n" +
-              "**IEE** - kindred\n" +
-              "**EIE** - reverse benefit\n" +
-              "**SLE** - business\n" +
-              "**LSE** - direct benefit\n" +
-              "**SEE** - super-ego\n" +
-              "**ESE** - activation\n" +
-              "**ILI** - extinguishment\n" +
-              "**LII** - mirror\n" +
-              "**IEI** - mirage\n" +
-              "**EII** - direct superevision\n" +
-              "**SLI** - semi-duality\n" +
-              "**LSI** - reverse superevision\n" +
-              "**SEI** - duality\n" +
-              "**ESI** - conflict",
+              "**ILE** - Identity\n" +
+              "**LIE** - Quasi-identity\n" +
+              "**IEE** - Rational Business/Irrational Kindred\n" +
+              "**EIE** - Reverse Benefit\n" +
+              "**SLE** - Rational Kindred/Irrational Business\n" +
+              "**LSE** - Direct Benefit\n" +
+              "**SEE** - Super-ego\n" +
+              "**ESE** - Activation\n" +
+              "**ILI** - Extinguishment\n" +
+              "**LII** - Mirror\n" +
+              "**IEI** - Rational Semi-duality/Irrational Mirage\n" +
+              "**EII** - Direct Superevision\n" +
+              "**SLI** - Rational Mirage/Irrational Semi-duality\n" +
+              "**LSI** - Reverse Superevision\n" +
+              "**SEI** - Duality\n" +
+              "**ESI** - Conflict",
           })
           .setImage("attachment://chart.png"),
       ],

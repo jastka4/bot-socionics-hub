@@ -10,6 +10,8 @@ import {
   getKeyByValue,
   isValid,
   typeIndicators,
+  relationshipNames,
+  relationshipDescriptions,
 } from "../../shared/integral-shared.js";
 
 /**
@@ -55,8 +57,19 @@ export const command = {
           new EmbedBuilder()
             .setColor(0xf1c40f)
             .setTitle(`Integral type is ${result}`)
-            .setDescription(
-              `Combined types:\n${listOfTypes.map((type) => `\`${type}\``).join(", ")}.`,
+            .addFields(
+              {
+                name: "Name",
+                value: `${relationshipNames.get(result)}`,
+              },
+              {
+                name: "Description",
+                value: `${relationshipDescriptions.get(result)}`,
+              },
+              {
+                name: "Combined types",
+                value: `${listOfTypes.map((type) => `\`${type}\``).join(", ")}`,
+              },
             ),
         ],
       });

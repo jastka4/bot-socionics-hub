@@ -47,6 +47,63 @@ export const typeIndicators = new Map([
     ["ESI", 15],
 ]);
 
+export const typeNames = new Map([
+    ["ILE", "Seeker"],
+    ["LIE", "Entrepreneur"],
+    ["IEE", "Advisor"],
+    ["EIE", "Mentor"],  
+    ["SLE", "Marshal"],
+    ["LSE", "Administrator"],
+    ["SEE", "Politician"],
+    ["ESE", "Enthusiast"],
+    ["ILI", "Critic"],
+    ["LII", "Analyst"],
+    ["IEI", "Lyricist"],
+    ["EII", "Humanist"],
+    ["SLI", "Craftsman"],
+    ["LSI", "Inspector"],
+    ["SEI", "Mediator"],
+    ["ESI", "Guardian"],
+]);
+
+export const relationshipNames = new Map([
+    ["ILE", "Identity"],
+    ["LIE", "Quasi-identity"],
+    ["IEE", "Rational Business/Irrational Kindred"],
+    ["EIE", "Reverse Benefit"],
+    ["SLE", "Rational Kindred/Irrational Business"],
+    ["LSE", "Direct Benefit"],
+    ["SEE", "Super-ego"],
+    ["ESE", "Activation"],
+    ["ILI", "Extinguishment"],
+    ["LII", "Mirror"],
+    ["IEI", "Rational Semi-duality/Irrational Mirage"],
+    ["EII", "Direct Superevision"],
+    ["SLI", "Rational Mirage/Irrational Semi-duality"],
+    ["LSI", "Reverse Superevision"],
+    ["SEI", "Duality"],
+    ["ESI", "Conflict"],
+]);
+
+export const relationshipDescriptions = new Map([
+    ["ILE", "Novelty, exploration, mutual learning, and searching for new solutions."],
+    ["LIE", "Business involvement, competition, risk-taking, and a reduced sense of the partner's reliability."],
+    ["IEE", "Giving useful advice, encouraging action, revealing abilities, and helping the partner find solutions."],
+    ["EIE", "Emotional agitation, demands, motivation, involvement, and struggle for influence."],  
+    ["SLE", "Effective joint action in extreme, critical, or high-pressure situations."],
+    ["LSE", "Work, useful activity, concern with getting things done, and drawing the partner into productive action."],
+    ["SEE", "Negotiating interests, mutually beneficial exchange, social support, and helping one another defend their interests."],
+    ["ESE", "Emotional excitation, activity, fuss, stimulation, and increased involvement with one another."],
+    ["ILI", "Mutual criticism, questioning the correctness of the partner's actions, negation, and cooling."],
+    ["LII", "Analysis, mutual correction, examining decisions, and forecasting consequences."],
+    ["IEI", "Periodic reconciliation, improved mood, hope for the future, emotional variability, and unstable work capacity."],
+    ["EII", "Sympathy, gentle correction, educational influence, help, and trying to guide through personal example."],
+    ["SLI", "Comfortable order, sensory care, practical cooperation, and relative emotional coolness."],
+    ["LSI", "Monitoring, checking, fault-finding, accusations of unfairness, stubbornness, resistance, and control."],
+    ["SEI", "Comfort, care, relaxation, accommodation, and peaceful resolution of tension."],
+    ["ESI", "Internal tension, distrust, defensiveness, distancing, and protecting one's territory from the partner."],
+]);
+
 /**
  * Validates that all entries in a space-separated string are known Socionics types.
  * 
